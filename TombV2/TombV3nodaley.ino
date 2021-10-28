@@ -43,9 +43,6 @@ long HourREDON = 0;     //hour where Red LED will be ON
 long MinuteREDON = 0;   //minute where Red LED will be ON
 long SecREDON = 0;
 long SecWHITEON =30;
-
-int PIRdelay = 10; // In millisecond. Wait 'X'msec before polling inputs again. Delay between samples for a total of 100 samples
-int SamplingNumber = 100; // number of time that PIR will be read in the counting loop. 
  
 int RintensityHIGH=255; // REDLED PWM duty cycle change 100% = 255 and 0 = OFF
 int RintensityLOW=0;
@@ -168,55 +165,31 @@ LEDcontrol();
 if(Serial.available()){
   char value=Serial.read();
   if(value == deviceCALLID[TOMB-1]){
-   while (LoopCounter <SamplingNumber) {  // measurements will keep looping until 10 sec is up (100 x 100 msec)
-      // if the state is high, increment the relevent PIRcounter
-        if (digitalRead(PIR1) == HIGH) {
-        // e.g. if the current state is HIGH then the increment PIR1 counter:
-        PIRCounter1++;
-      }
-      if (digitalRead(PIR2) == HIGH) {
-        PIRCounter2++;
-      }
-      if (digitalRead(PIR3) == HIGH) {
-        PIRCounter3++;
-      }
-      if (digitalRead(PIR4) == HIGH) {
-        PIRCounter4++;
-      }
-      if (digitalRead(PIR5) == HIGH) {
-        PIRCounter5++;
-      }
-      if (digitalRead(PIR6) == HIGH) {
-        PIRCounter6++;
-      }
-         delay(PIRdelay);  // wait 100msec before polling inputs again.  this timing can be varied to ensure consistent 10sec updates.
-         LoopCounter++;
-    }
     //send HEADER indicating data follows
       String dev = String(deviceSendID[TOMB-1]);
       Serial.print(dev);
       Serial.print(",");
       //Serial.print('\n');
-      printTime();
+      //printTime();
     // separate with a comma
-      Serial.print(",");
+      //Serial.print(",");
     // send total activity for PIR counters, separated by commas
-      Serial.print(PIRCounter1);
+      Serial.print(digitalRead(PIR1));
       Serial.print(",");
       //Serial.print('\n');
-      Serial.print(PIRCounter2);
+      Serial.print(digitalRead(PIR2));
       Serial.print(",");
       //Serial.print('\n');
-      Serial.print(PIRCounter3);
+      Serial.print(digitalRead(PIR3));
       Serial.print(",");
       //Serial.print('\n');
-      Serial.print(PIRCounter4);
+      Serial.print(digitalRead(PIR4));
       Serial.print(",");
       //Serial.print('\n');
-      Serial.print(PIRCounter5);
+      Serial.print(digitalRead(PIR5));
       Serial.print(",");
       //Serial.print('\n');
-      Serial.print(PIRCounter6);
+      Serial.print(digitalRead(PIR6));
       Serial.print(",");
       //Serial.print('\n');
    // read Light-dependant resistor (LDR) connected to analog pin 2 and send resulting number
@@ -237,13 +210,6 @@ if(Serial.available()){
       //Serial.print('\n');
       Serial.print(analogRead(LDR6));
       Serial.print('\n'); // new line (linefeed) character 
-         LoopCounter = 0; // reset your loops
-         PIRCounter1=0;  // and your individual counters
-         PIRCounter2=0;
-         PIRCounter3=0;
-         PIRCounter4=0;
-         PIRCounter5=0;
-         PIRCounter6=0;
   }
 
   if(value == 'T'){
@@ -256,13 +222,13 @@ if(Serial.available()){
     
     //(sec,min,hour,weekday,day,month,year)
   rtc.setTime(parameters[0], parameters[1], parameters[2], parameters[3]+1, parameters[4], parameters[5], parameters[6]);  // Uncomment to manually set time
-  delay(200*TOMB);
-      Serial.print("tomb "); 
-      Serial.print(TOMB);
-      Serial.print(" rtc time: ");
-      Serial.print('\n');
-      printTime();
-      Serial.print('\n');
+//  delay(200*TOMB);
+//      Serial.print("tomb "); 
+//      Serial.print(TOMB);
+//      Serial.print(" rtc time: ");
+//      Serial.print('\n');
+//      printTime();
+//      Serial.print('\n');
       clearparameters();
   }
 
@@ -274,9 +240,9 @@ if(Serial.available()){
       LEDvalues=1;
      }
      if(value == deviceCALLID[TOMB-1]){
-       delay(10);
-       Serial.print("change led time in tomb ");
-       Serial.println(TOMB);
+//       delay(10);
+//       Serial.print("change led time in tomb ");
+//       Serial.println(TOMB);
        recvdata();
        HourWHITEON = parameters[0];  // hour where White LED will be ON
        MinuteWHITEON = parameters[1]; //minute where White LED will be ON
