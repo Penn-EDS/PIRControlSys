@@ -153,6 +153,7 @@ try:
              #send all information inside LEDT15config.txt
          if Tombscall[x-1] == b'P':
              #send all information inside LEDT16config.txt
+
            
   #To send the LED Configuration Only to Tomb 1
   if (keyboard.is_pressed("A")):
@@ -169,6 +170,57 @@ try:
   #To send the LED Configuration Only to Tomb 4
   if (keyboard.is_pressed("D")):
     #send all information inside LEDT4config.txt
+    
+  #To send the LED Configuration Only to Tomb 5
+  if (keyboard.is_pressed("E")):
+    #send all information inside LEDT5config.txt
+
+ #To send the LED Configuration Only to Tomb 6
+  if (keyboard.is_pressed("F")):
+    #send all information inside LEDT6config.txt
+
+  #To send the LED Configuration Only to Tomb 7
+  if (keyboard.is_pressed("G")):
+    #send all information inside LEDT7config.txt
+
+  #To send the LED Configuration Only to Tomb 8
+  if (keyboard.is_pressed("H")):
+    #send all information inside LEDT8config.txt
+
+  #To send the LED Configuration Only to Tomb 9
+  if (keyboard.is_pressed("I")):
+    #send all information inside LEDT9config.txt
+    
+  #To send the LED Configuration Only to Tomb 10
+  if (keyboard.is_pressed("J")):
+    #send all information inside LEDT10config.txt
+
+  #To send the LED Configuration Only to Tomb 11
+  if (keyboard.is_pressed("K")):
+    #send all information inside LEDT11config.txt
+
+  #To send the LED Configuration Only to Tomb 12
+  if (keyboard.is_pressed("L")):
+    #send all information inside LEDT12config.txt
+
+  #To send the LED Configuration Only to Tomb 13
+  if (keyboard.is_pressed("M")):
+    #send all information inside LEDT13config.txt
+
+  #To send the LED Configuration Only to Tomb 14
+  if (keyboard.is_pressed("N")):
+    #send all information inside LEDT14config.txt
+
+  #To send the LED Configuration Only to Tomb 15
+  if (keyboard.is_pressed("O")):
+    #send all information inside LEDT15config.txt
+
+  #To send the LED Configuration Only to Tomb 16
+  if (keyboard.is_pressed("P")):
+    #send all information inside LEDT16config.txt
+
+
+
   
   #To setup the RTC with the computer time
   if (keyboard.is_pressed("T")):
