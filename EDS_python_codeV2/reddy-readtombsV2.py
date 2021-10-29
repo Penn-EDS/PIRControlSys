@@ -17,6 +17,23 @@ ser = serial.Serial('COM10', 57600,timeout=1)  # open serial port. Minimum timeo
 timenow = datetime.datetime.now()
 foldername=timenow.strftime("%Y%m%d_%H%M")
 
+#LEDTxconfig.txt addresses
+LEDT1configAddress=os.getcwd()+"/LEDconfig"+"/LEDT1config.txt
+LEDT2configAddress=os.getcwd()+"/LEDconfig"+"/LEDT2config.txt
+LEDT3configAddress=os.getcwd()+"/LEDconfig"+"/LEDT3config.txt
+LEDT4configAddress=os.getcwd()+"/LEDconfig"+"/LEDT4config.txt
+LEDT5configAddress=os.getcwd()+"/LEDconfig"+"/LEDT5config.txt
+LEDT6configAddress=os.getcwd()+"/LEDconfig"+"/LEDT6config.txt
+LEDT7configAddress=os.getcwd()+"/LEDconfig"+"/LEDT7config.txt
+LEDT8configAddress=os.getcwd()+"/LEDconfig"+"/LEDT8config.txt
+LEDT9configAddress=os.getcwd()+"/LEDconfig"+"/LEDT9config.txt
+LEDT10configAddress=os.getcwd()+"/LEDconfig"+"/LEDT10config.txt
+LEDT11configAddress=os.getcwd()+"/LEDconfig"+"/LEDT11config.txt
+LEDT12configAddress=os.getcwd()+"/LEDconfig"+"/LEDT12config.txt
+LEDT13configAddress=os.getcwd()+"/LEDconfig"+"/LEDT13config.txt
+LEDT14configAddress=os.getcwd()+"/LEDconfig"+"/LEDT14config.txt
+LEDT15configAddress=os.getcwd()+"/LEDconfig"+"/LEDT15config.txt
+LEDT16configAddress=os.getcwd()+"/LEDconfig"+"/LEDT16config.txt
 
 #folder creation
 
@@ -122,6 +139,7 @@ try:
   if (keyboard.is_pressed("R")):
     for x in Tombs:
          if Tombscall[x-1] == b'A':
+           #go to LEDconfig/LEDT1config.txt
             #send all information inside LEDT1config.txt
          if Tombscall[x-1] == b'B':
              #send all information inside LEDT2config.txt
