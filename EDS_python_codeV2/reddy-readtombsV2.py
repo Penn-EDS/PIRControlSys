@@ -160,6 +160,8 @@ try:
       #new folder ect
       timenow = datetime.datetime.now()
       foldername=timenow.strftime("%Y%m%d_%H%M")
+      currentpath = os.getcwd()
+      path = os.path.join(currentpath,"output_folder")
       path = os.path.join(path,foldername)
       os.mkdir(path)
       foldername="output_folder/"+foldername
