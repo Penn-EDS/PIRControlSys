@@ -52,9 +52,9 @@ int WintensityLOW=0;
 
 
 //Don't change any of these variables below:
-char deviceCALLID[16] ={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'};
+const char deviceCALLID[16] ={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'};
 
-char deviceSendID[16] ={'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p'};
+const char deviceSendID[16] ={'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p'};
 
 
 //(sec,min,hour,weekday,day,month,year)
@@ -64,6 +64,8 @@ char recvchars[32];
 boolean newdata=false;
 int p=0;
 static int parameters[65];
+int ASize=736;                   //Size of LED configuration array
+static int LEDparameters[736];  //LED configuration array
 int LEDvalues =0; //just a flag
 int PIRCounter1 = 0;  //acitivty counter for PIR1
 int PIRCounter2 = 0;  //acitivty counter for PIR2
@@ -211,7 +213,11 @@ if(Serial.available()){
       Serial.print(analogRead(LDR6));
       Serial.print('\n'); // new line (linefeed) character 
   }
-
+  if(value =='W'){
+      for(int x=0; x<ASize; x++){
+       Serial.println(LEDparameters[x]);
+      }
+  }
   if(value == 'T'){
     //delay(100);
     //Serial.println("change rtc time");
@@ -236,36 +242,37 @@ if(Serial.available()){
    while(LEDvalues==0){
     if(Serial.available()){
      char value=Serial.read();
-     if (value=='X'){
+     if (value =='X'){
       LEDvalues=1;
      }
      if(value == deviceCALLID[TOMB-1]){
 //       delay(10);
 //       Serial.print("change led time in tomb ");
 //       Serial.println(TOMB);
-       recvdata();
-       HourWHITEON = parameters[0];  // hour where White LED will be ON
-       MinuteWHITEON = parameters[1]; //minute where White LED will be ON
-       SecWHITEON =parameters[2];
-       HourREDON = parameters[3];     //hour where Red LED will be ON
-       MinuteREDON = parameters[4];   //minute where Red LED will be ON
-       SecREDON = parameters[5];
-       /*
-       RintensityHIGH = parameters[6]; // REDLED PWM duty cycle change 100% = 255 and 0 = OFF
-       RintensityLOW = parameters[7];
-       WintensityHIGH = parameters[8]; // WHITELED PWM duty cycle change 100% = 255 and 0 = OFF
-       WintensityLOW = parameters[9];
-       */
-       secREDON = HourREDON*60*60 + MinuteREDON*60 + SecREDON;
-       secWHITEON = HourWHITEON*60*60 + MinuteWHITEON*60 + SecWHITEON;
+       clearLEDparameters();
+       LEDrecvdata();
+//       HourWHITEON = parameters[0];  // hour where White LED will be ON
+//       MinuteWHITEON = parameters[1]; //minute where White LED will be ON
+//       SecWHITEON =parameters[2];
+//       HourREDON = parameters[3];     //hour where Red LED will be ON
+//       MinuteREDON = parameters[4];   //minute where Red LED will be ON
+//       SecREDON = parameters[5];
+//       /*
+//       RintensityHIGH = parameters[6]; // REDLED PWM duty cycle change 100% = 255 and 0 = OFF
+//       RintensityLOW = parameters[7];
+//       WintensityHIGH = parameters[8]; // WHITELED PWM duty cycle change 100% = 255 and 0 = OFF
+//       WintensityLOW = parameters[9];
+//       */
+//       secREDON = HourREDON*60*60 + MinuteREDON*60 + SecREDON;
+//       secWHITEON = HourWHITEON*60*60 + MinuteWHITEON*60 + SecWHITEON;
         /*
  Serial.println(secREDON);
  Serial.println(secWHITEON);
  */
-       clearparameters();
+       //clearparameters();
        
        LEDvalues=1;
-       
+       /*
         if ((HourREDON==0) && (HourWHITEON==0)){
           hoursflag = 0;
         }
