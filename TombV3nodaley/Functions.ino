@@ -26,6 +26,7 @@ void recvdata(){
   char comma=',';
   char endmarker='>';
   char c;
+  clearrecvchars();
   
   while(1){
   while(Serial.available()>0 && newdata==false){
@@ -92,6 +93,7 @@ void LEDrecvdata(){
   char comma=',';
   char endmarker='>';
   char c;
+  clearrecvchars();
   
   while(1){
   while(Serial.available()>0 && newdata==false){

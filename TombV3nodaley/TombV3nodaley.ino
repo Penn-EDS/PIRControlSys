@@ -33,21 +33,29 @@
 #define LDR6 A5
 
 // Tomb number. Make sure to enter the correct tomb number before programing the MCU
-int TOMB = 1;
+int TOMB = 2;
 
 // Military Hour Used 00:00 - 23:59
 // SET up variables:
-long HourWHITEON = 0;  // hour where White LED will be ON
-long MinuteWHITEON = 0; //minute where White LED will be ON
-long HourREDON = 0;     //hour where Red LED will be ON
-long MinuteREDON = 0;   //minute where Red LED will be ON
-long SecREDON = 0;
-long SecWHITEON =30;
+int Day = 0;
+int Month = 0;
+int Year = 0;
+int Hour = 0;
+int Minute = 0;
+int Sec = 0;
+int RtcDay = 0;
+int DayS = 0;
+
+unsigned long LEDUnix = 0;
+unsigned long RTCUnix = 0;
  
-int RintensityHIGH=255; // REDLED PWM duty cycle change 100% = 255 and 0 = OFF
-int RintensityLOW=0;
-int WintensityHIGH=255; // WHITELED PWM duty cycle change 100% = 255 and 0 = OFF
-int WintensityLOW=0;
+int Rintensity=0; // REDLED PWM duty cycle change 100% = 255 and 0 = OFF
+int Wintensity=0;
+
+int NextLEDConfiflag = 0; // if 1 the LED time varianbles are going to be updated with the next 8 variables
+int NextLEDConfi = 0; // pointer for the LEDparameters array
+int IFLEDParameterReceived = 0; // 1 if after LED parameters are received for the first time.
+int laspara=0; // to know if last parameter was made 
 
 
 
@@ -56,6 +64,7 @@ const char deviceCALLID[16] ={'A','B','C','D','E','F','G','H','I','J','K','L','M
 
 const char deviceSendID[16] ={'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p'};
 
+String dev = String(deviceSendID[TOMB-1]);
 
 //(sec,min,hour,weekday,day,month,year)
 int RTC[7] ={0,0,0,1,1,1,2000};
@@ -64,8 +73,9 @@ char recvchars[32];
 boolean newdata=false;
 int p=0;
 static int parameters[65];
-int ASize=736;                   //Size of LED configuration array
-static int LEDparameters[736];  //LED configuration array
+int ASize=456;                   //Size of LED configuration array
+static int LEDparameters[456];  //LED configuration array
+int LEDpointer = 0;
 int LEDvalues =0; //just a flag
 int PIRCounter1 = 0;  //acitivty counter for PIR1
 int PIRCounter2 = 0;  //acitivty counter for PIR2
@@ -75,57 +85,13 @@ int PIRCounter5 = 0;  //acitivty counter for PIR5
 int PIRCounter6 = 0;  //acitivty counter for PIR6
 int LoopCounter = 0; //loopcounter for activity
 
-int WHITEREDDAY = 1;  // 1 if White will be ON during the day. example from 7 to 20
-                      // 0 if RED will be ON during the day. 
-  /* In other words if the WHITE LED will be ON during the Night, crossing the 
-     midnight(12am of 24 in military time) to 1am please change the WHITEREDDAY variable to 0. 
-    
-     The same for the RED LED. IF RED LED will be ON during the the crossing time from 
-     midnight(12 am or 24 in military time) to 1 am plaese change the WHITEREDDAY variable to 1. 
-*/
-//don't change this
-long secREDON = (((HourREDON*60) + MinuteREDON)*60) + SecREDON;
-long secWHITEON = (((HourWHITEON*60) + MinuteWHITEON)*60) + SecWHITEON;
-long minuteflag = 1;   // if variable MinuteREDON>0 && MinuteWHITEON>0 minuteflag is 1
-long secondsflag = 1;   // if variable SecREDON>0 && SecWHITEON>0secondflag is 1
-long hoursflag = 1;   // if variable HourREDON>0 && HourWHITEON>0 hoursflag is 1
-
 void setup() {
   
-  if ((HourREDON==0) && (HourWHITEON==0)){
-    hoursflag = 0;
-  }
-  else{
-    hoursflag = 1;
-  }
-
-  
-  if ((MinuteREDON==0) && (MinuteWHITEON==0)){
-    minuteflag = 0;
-  }
-  else{
-    minuteflag = 1;
-  }
-
-
-  if ((SecREDON==0) && (SecWHITEON==0)){
-    secondsflag = 0;
-  }
-  else{
-    secondsflag = 1;
-  }
-  
-  if(secWHITEON > secREDON){
-    WHITEREDDAY = 0;
-  }
-  else{
-    WHITEREDDAY = 1;
-  }
   Serial.begin(57600);
   rtc.begin(DS13074_CS_PIN);
   pinMode(WHITELED,OUTPUT); //PIN 10
   pinMode(REDLED,OUTPUT); //PIN 11
-  
+   
   pinMode(LDR1,INPUT);
   pinMode(LDR2,INPUT);
   pinMode(LDR3,INPUT);
@@ -163,12 +129,13 @@ void setup() {
 
 
 void loop() {
+if (IFLEDParameterReceived == 1){
 LEDcontrol();
+}
 if(Serial.available()){
   char value=Serial.read();
   if(value == deviceCALLID[TOMB-1]){
     //send HEADER indicating data follows
-      String dev = String(deviceSendID[TOMB-1]);
       Serial.print(dev);
       Serial.print(",");
       //Serial.print('\n');
@@ -213,11 +180,82 @@ if(Serial.available()){
       Serial.print(analogRead(LDR6));
       Serial.print('\n'); // new line (linefeed) character 
   }
+  
+  //just for throubleshooting. this if can be eliminated later
   if(value =='W'){
-      for(int x=0; x<ASize; x++){
-       Serial.println(LEDparameters[x]);
-      }
+      delay(500*TOMB);
+      Serial.print(dev);
+      printTime();
+
+      rtc.update();
+     RtcDay = (unsigned long)rtc.date();
+     RtcDay += (rtc.year()+2000-1970)*365.2422;    
+    if((rtc.year() % 4)==0){
+     RtcDay += 1;
+    }
+    if(rtc.month()==2){
+     RtcDay += 31;
+    }
+    if(rtc.month()==3){
+     RtcDay += 59 ;
+    }
+    if(rtc.month()==4){
+     RtcDay += 90;
+    }
+    if(rtc.month()==5){
+     RtcDay += 120;
+    }
+    if(rtc.month()==6){
+     RtcDay += 151;
+    }
+    if(rtc.month()==7){
+     RtcDay += 181;
+    }
+    if(rtc.month()==8){
+     RtcDay += 212;
+    }
+    if(rtc.month()==9){
+     RtcDay += 243;
+    }
+    if(rtc.month()==10){
+     RtcDay += 273;
+    }
+    if(rtc.month()==11){
+     RtcDay += 304;
+    }
+    if(rtc.month()==12){
+     RtcDay += 334;
+    }  
+    RTCUnix = (unsigned long)RtcDay*86400 + (unsigned long)rtc.hour()*3600 + (unsigned long)rtc.minute()*60 + (unsigned long)rtc.second();
+
+      
+      Serial.print("rtcunix:");
+      Serial.println(RTCUnix);
+      Serial.print("ledunix:");
+      Serial.println(LEDUnix);
+      Serial.print("ledpointer:");
+      Serial.println(LEDpointer);
+      Serial.print("day:");
+      Serial.println(Day);
+      Serial.print("month:");
+      Serial.println(Month);
+      Serial.print("year:");
+      Serial.println(Year);
+      Serial.print("hour:");
+      Serial.println(Hour);
+      Serial.print("minute:");
+      Serial.println(Minute);
+      Serial.print("sec:");
+      Serial.println(Sec);
+      Serial.print("wintensity:");
+      Serial.println(Wintensity);
+      Serial.print("rintensity:");
+      Serial.println(Rintensity);
+      Serial.print("lastparameter?:");
+      Serial.println(laspara);
+      
   }
+  
   if(value == 'T'){
     //delay(100);
     //Serial.println("change rtc time");
@@ -227,7 +265,7 @@ if(Serial.available()){
     recvdata();
     
     //(sec,min,hour,weekday,day,month,year)
-  rtc.setTime(parameters[0], parameters[1], parameters[2], parameters[3]+1, parameters[4], parameters[5], parameters[6]);  // Uncomment to manually set time
+  rtc.setTime(parameters[0], parameters[1], parameters[2], parameters[3]+1, parameters[4], parameters[5], parameters[6]); 
 //  delay(200*TOMB);
 //      Serial.print("tomb "); 
 //      Serial.print(TOMB);
@@ -246,78 +284,67 @@ if(Serial.available()){
       LEDvalues=1;
      }
      if(value == deviceCALLID[TOMB-1]){
-//       delay(10);
-//       Serial.print("change led time in tomb ");
-//       Serial.println(TOMB);
        clearLEDparameters();
        LEDrecvdata();
-//       HourWHITEON = parameters[0];  // hour where White LED will be ON
-//       MinuteWHITEON = parameters[1]; //minute where White LED will be ON
-//       SecWHITEON =parameters[2];
-//       HourREDON = parameters[3];     //hour where Red LED will be ON
-//       MinuteREDON = parameters[4];   //minute where Red LED will be ON
-//       SecREDON = parameters[5];
-//       /*
-//       RintensityHIGH = parameters[6]; // REDLED PWM duty cycle change 100% = 255 and 0 = OFF
-//       RintensityLOW = parameters[7];
-//       WintensityHIGH = parameters[8]; // WHITELED PWM duty cycle change 100% = 255 and 0 = OFF
-//       WintensityLOW = parameters[9];
-//       */
-//       secREDON = HourREDON*60*60 + MinuteREDON*60 + SecREDON;
-//       secWHITEON = HourWHITEON*60*60 + MinuteWHITEON*60 + SecWHITEON;
-        /*
- Serial.println(secREDON);
- Serial.println(secWHITEON);
- */
-       //clearparameters();
+       LEDpointer = 0;
+       Day = LEDparameters[LEDpointer];
+       Month = LEDparameters[++LEDpointer];
+       Year = LEDparameters[++LEDpointer];
+       Hour = LEDparameters[++LEDpointer];  
+       Minute = LEDparameters[++LEDpointer]; 
+       Sec = LEDparameters[++LEDpointer];
+       Wintensity = LEDparameters[++LEDpointer];
+       Rintensity = LEDparameters[++LEDpointer];
+       DayS=Day;
+       DayS += (Year-1970)*365.2422;     
+      if((Year % 4)==0){
+        DayS += 1;
+      }
+      if(Month==2){
+      DayS += 31;
+      }
+      if(Month==3){
+      DayS += 59 ;
+      }
+      if(Month==4){
+      DayS += 90;
+      }
+      if(Month==5){
+      DayS += 120;
+      }
+      if(Month==6){
+      DayS += 151;
+      }
+      if(Month==7){
+      DayS += 181;
+      }
+      if(Month==8){
+      DayS += 212;
+      }
+      if(Month==9){
+      DayS += 243;
+      }
+      if(Month==10){
+      DayS += 273;
+      }
+      if(Month==11){
+      DayS += 304;
+      }
+      if(Month==12){
+      DayS += 334;
+      }
+      
+       LEDUnix = (unsigned long)DayS*86400 + (unsigned long)Hour*3600 +(unsigned long)Minute*60 + (unsigned long)Sec ;
+       IFLEDParameterReceived = 1;
+       laspara=0;
        
-       LEDvalues=1;
-       /*
-        if ((HourREDON==0) && (HourWHITEON==0)){
-          hoursflag = 0;
-        }
-        else{
-          hoursflag = 1;
-        }
-      
-        
-        if ((MinuteREDON==0) && (MinuteWHITEON==0)){
-          minuteflag = 0;
-        }
-        else{
-          minuteflag = 1;
-        }
-      
-      
-        if ((SecREDON==0) && (SecWHITEON==0)){
-          secondsflag = 0;
-        }
-        else{
-          secondsflag = 1;
-        }
-
-       
-       if(secWHITEON > secREDON){
-         WHITEREDDAY = 0;
-       }
-       else{
-        WHITEREDDAY = 1;
-       }
-       /*
-       Serial.print("WHITEREDDAY: ");
-       Serial.println(WHITEREDDAY);
-       Serial.print("secWHITEON: ");
-       Serial.println(secWHITEON);
-       Serial.print("secREDON: ");
-       Serial.println(secREDON);
-       */
+       LEDvalues=1; 
       }
      }
     }
     LEDvalues=0;
   }
- }
-//LEDcontrol();     
+ }     
 }
 
 void LEDcontrol(){
@@ -325,52 +352,116 @@ void LEDcontrol(){
   // etc. return functions.
   
   rtc.update();
-  /*
-  Serial.print("rtc.hour(): ");
-  Serial.println(rtc.hour());
-  Serial.print("rtc.minute(): ");
-  Serial.println(rtc.minute());
-  Serial.print("rtc.second(): ");
-  Serial.println(rtc.second());
-  */
-  long TimeSec = long(rtc.hour())*60*60*hoursflag + long(rtc.minute())*60*minuteflag + long(rtc.second())*secondsflag;
-  /*
-  Serial.print("TimeSec: ");
-  Serial.println(TimeSec);
-  Serial.print("WHITEREDDAY: ");
-  Serial.println(WHITEREDDAY);
-  Serial.print("secWHITEON: ");
-  Serial.println(secWHITEON);
-  Serial.print("secREDON: ");
-  Serial.println(secREDON);
- */
+   RtcDay = (unsigned long)rtc.date();
+   RtcDay += (rtc.year()+2000-1970)*365.2422;    
+  if((rtc.year() % 4)==0){
+   RtcDay += 1;
+  }
+  if(rtc.month()==2){
+   RtcDay += 31;
+  }
+  if(rtc.month()==3){
+   RtcDay += 59 ;
+  }
+  if(rtc.month()==4){
+   RtcDay += 90;
+  }
+  if(rtc.month()==5){
+   RtcDay += 120;
+  }
+  if(rtc.month()==6){
+   RtcDay += 151;
+  }
+  if(rtc.month()==7){
+   RtcDay += 181;
+  }
+  if(rtc.month()==8){
+   RtcDay += 212;
+  }
+  if(rtc.month()==9){
+   RtcDay += 243;
+  }
+  if(rtc.month()==10){
+   RtcDay += 273;
+  }
+  if(rtc.month()==11){
+   RtcDay += 304;
+  }
+  if(rtc.month()==12){
+   RtcDay += 334;
+  }  
+  RTCUnix = (unsigned long)RtcDay*86400 + (unsigned long)rtc.hour()*3600 + (unsigned long)rtc.minute()*60 + (unsigned long)rtc.second();
   
- if(WHITEREDDAY == 1){
-  if (TimeSec>=secWHITEON && TimeSec<secREDON){  //whiteON
-    analogWrite(REDLED,RintensityLOW);
-    analogWrite(WHITELED,WintensityHIGH);
-    //digitalWrite(13,LOW);
-  }
-  else{  // REDON
-    analogWrite(REDLED,RintensityHIGH);
-    analogWrite(WHITELED,WintensityLOW);
-    //digitalWrite(13,HIGH);
-  }
- }
 
- if(WHITEREDDAY == 0){
-  if (TimeSec>=secREDON && TimeSec<secWHITEON){  //REDON
-    analogWrite(REDLED,RintensityHIGH);
-    analogWrite(WHITELED,WintensityLOW);
-    //digitalWrite(13,HIGH);
+  if (RTCUnix>=LEDUnix){  
+    analogWrite(REDLED,Rintensity);
+    analogWrite(WHITELED,Wintensity);
+    NextLEDConfiflag=1;
   }
-  else{  // WhiteON
-    
-    analogWrite(REDLED,RintensityLOW);
-    analogWrite(WHITELED,WintensityHIGH);
-    //digitalWrite(13,LOW);
+
+  if(NextLEDConfiflag==1){
+      if(LEDparameters[++LEDpointer]==32){
+        //end of array
+        // setting LED to 0
+        analogWrite(REDLED,0);
+        analogWrite(WHITELED,0);
+        IFLEDParameterReceived = 0;
+        laspara=1;
+        goto Last;
+      }
+       Day = LEDparameters[LEDpointer];
+       Month = LEDparameters[++LEDpointer];
+       Year = LEDparameters[++LEDpointer];
+       Hour = LEDparameters[++LEDpointer];  
+       Minute = LEDparameters[++LEDpointer]; 
+       Sec = LEDparameters[++LEDpointer];
+       Wintensity = LEDparameters[++LEDpointer];
+       Rintensity = LEDparameters[++LEDpointer];
+       DayS=Day;
+       DayS += (Year-1970)*365.2422;    
+      if((Year % 4)==0){
+        DayS += 1;
+      }
+      if(Month==2){
+      DayS += 31;
+      }
+      if(Month==3){
+      DayS += 59 ;
+      }
+      if(Month==4){
+      DayS += 90;
+      }
+      if(Month==5){
+      DayS += 120;
+      }
+      if(Month==6){
+      DayS += 151;
+      }
+      if(Month==7){
+      DayS += 181;
+      }
+      if(Month==8){
+      DayS += 212;
+      }
+      if(Month==9){
+      DayS += 243;
+      }
+      if(Month==10){
+      DayS += 273;
+      }
+      if(Month==11){
+      DayS += 304;
+      }
+      if(Month==12){
+      DayS += 334;
+      }
+      
+       LEDUnix = (unsigned long)DayS*86400 + (unsigned long)Hour*3600 + (unsigned long)Minute*60 + (unsigned long)Sec ;
+       NextLEDConfiflag = 0;
   }
- }
+Last:
+NextLEDConfiflag = 0;
+
 }
 
 void printTime()
@@ -378,28 +469,29 @@ void printTime()
   rtc.update();
   Serial.print("(");
   Serial.print(String(rtc.hour()) + ":"); // Print hour
-  if (rtc.minute() < 10)
+  if (rtc.minute() < 10){
     Serial.print('0'); // Print leading '0' for minute
+  }
   Serial.print(String(rtc.minute()) + ":"); // Print minute
-  if (rtc.second() < 10)
+  if (rtc.second() < 10){
     Serial.print('0'); // Print leading '0' for second
+  }
   Serial.print(String(rtc.second())); // Print second
   
   Serial.print("|");
 
   // Few options for printing the day, pick one:
-  Serial.print(rtc.dayStr()); // Print day string
+  //Serial.print(rtc.dayStr()); // Print day string
   //Serial.print(rtc.dayC()); // Print day character
-  //Serial.print(rtc.day()); // Print day integer (1-7, Sun-Sat)
+  Serial.print(rtc.day()); // Print day integer (1-7, Sun-Sat)
   Serial.print("-");
-#ifdef PRINT_USA_DATE
+//#ifdef PRINT_USA_DATE
   Serial.print(String(rtc.month()) + "/" +   // Print month
                  String(rtc.date()) + "/");  // Print date
-#else
-  Serial.print(String(rtc.date()) + "/" +    // (or) print date
-                 String(rtc.month()) + "/"); // Print month
-#endif
+//#else
+//  Serial.print(String(rtc.date()) + "/" +    // (or) print date
+//                 String(rtc.month()) + "/"); // Print month
+//#endif
   Serial.print(String(rtc.year()));        // Print year
-  Serial.print(")");
-  Serial.print('\n');     
+  Serial.println(")");    
 }
