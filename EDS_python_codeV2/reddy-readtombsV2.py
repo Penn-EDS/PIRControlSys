@@ -234,105 +234,295 @@ try:
       day=calendar.weekday(todayday.year, todayday.month, todayday.day)
   #To send the LED Configuration to each tomb
   if (keyboard.is_pressed("R")):
+    ser.write(b'Z')
     for x in Tombs:
          if Tombscall[x-1] == b'A':
-           #go to LEDconfig/LEDT1config.txt
-            #send all information inside LEDT1config.txt
+             #send all information inside LEDT1config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT1config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)  
          if Tombscall[x-1] == b'B':
              #send all information inside LEDT2config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT2config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'C':
              #send all information inside LEDT3config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT3config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'D':
-           #send all information inside LEDT4config.txt
+             #send all information inside LEDT4config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT4config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'E':
              #send all information inside LEDT5config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT5config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'F':
              #send all information inside LEDT6config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT6config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'G':
-            #send all information inside LEDT7config.txt
+             #send all information inside LEDT7config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT7config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'H':
              #send all information inside LEDT8config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT8config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'I':
              #send all information inside LEDT9config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT9config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'J':
              #send all information inside LEDT10config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT10config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'K':
-            #send all information inside LEDT11config.txt
+             #send all information inside LEDT11config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT11config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'L':
              #send all information inside LEDT12config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT12config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'M':
-            #send all information inside LEDT13config.txt
+             #send all information inside LEDT13config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT13config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'N':
-            #send all information inside LEDT14config.txt
+             #send all information inside LEDT14config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT14config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'O':
              #send all information inside LEDT15config.txt
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT15config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
          if Tombscall[x-1] == b'P':
              #send all information inside LEDT16config.txt
-
+             ser.write(Tombscall[x-1])
+             f = open("LEDconfig/LEDT16config.txt", "r")
+             b = bytes(f.read(), 'utf-8')
+             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             ser.write(b)
+    ser.write(b'X')
            
   #To send the LED Configuration Only to Tomb 1
   if (keyboard.is_pressed("A")):
     #send all information inside LEDT1config.txt
+    ser.write(b'Z')
+    ser.write(b'A')
+    f = open("LEDconfig/LEDT1config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
     
   #To send the LED Configuration Only to Tomb 2
   if (keyboard.is_pressed("B")):
     #send all information inside LEDT2config.txt
+    ser.write(b'Z')
+    ser.write(b'B')
+    f = open("LEDconfig/LEDT2config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
     
   #To send the LED Configuration Only to Tomb 3
   if (keyboard.is_pressed("C")):
     #send all information inside LEDT3config.txt
-
+    ser.write(b'Z')
+    ser.write(b'C')
+    f = open("LEDconfig/LEDT3config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
+    
   #To send the LED Configuration Only to Tomb 4
   if (keyboard.is_pressed("D")):
     #send all information inside LEDT4config.txt
+    ser.write(b'Z')
+    ser.write(b'D')
+    f = open("LEDconfig/LEDT4config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
     
   #To send the LED Configuration Only to Tomb 5
   if (keyboard.is_pressed("E")):
     #send all information inside LEDT5config.txt
-
+    ser.write(b'Z')
+    ser.write(b'E')
+    f = open("LEDconfig/LEDT5config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
+    
  #To send the LED Configuration Only to Tomb 6
   if (keyboard.is_pressed("F")):
     #send all information inside LEDT6config.txt
+    ser.write(b'Z')
+    ser.write(b'F')
+    f = open("LEDconfig/LEDT6config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 7
   if (keyboard.is_pressed("G")):
     #send all information inside LEDT7config.txt
+    ser.write(b'Z')
+    ser.write(b'G')
+    f = open("LEDconfig/LEDT7config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 8
   if (keyboard.is_pressed("H")):
     #send all information inside LEDT8config.txt
+    ser.write(b'Z')
+    ser.write(b'H')
+    f = open("LEDconfig/LEDT8config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 9
   if (keyboard.is_pressed("I")):
     #send all information inside LEDT9config.txt
+    ser.write(b'Z')
+    ser.write(b'I')
+    f = open("LEDconfig/LEDT9config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
     
   #To send the LED Configuration Only to Tomb 10
   if (keyboard.is_pressed("J")):
     #send all information inside LEDT10config.txt
+    ser.write(b'Z')
+    ser.write(b'J')
+    f = open("LEDconfig/LEDT10config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 11
   if (keyboard.is_pressed("K")):
     #send all information inside LEDT11config.txt
+    ser.write(b'Z')
+    ser.write(b'K')
+    f = open("LEDconfig/LEDT11config.txt", "r")
+    ser.write(f.read())
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 12
   if (keyboard.is_pressed("L")):
     #send all information inside LEDT12config.txt
+    ser.write(b'Z')
+    ser.write(b'L')
+    f = open("LEDconfig/LEDT12config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 13
   if (keyboard.is_pressed("M")):
     #send all information inside LEDT13config.txt
+    ser.write(b'Z')
+    ser.write(b'M')
+    f = open("LEDconfig/LEDT13config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 14
   if (keyboard.is_pressed("N")):
     #send all information inside LEDT14config.txt
+    ser.write(b'Z')
+    ser.write(b'N')
+    f = open("LEDconfig/LEDT14config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 15
   if (keyboard.is_pressed("O")):
     #send all information inside LEDT15config.txt
+    ser.write(b'Z')
+    ser.write(b'O')
+    f = open("LEDconfig/LEDT15config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
   #To send the LED Configuration Only to Tomb 16
   if (keyboard.is_pressed("P")):
     #send all information inside LEDT16config.txt
+    ser.write(b'Z')
+    ser.write(b'P')
+    f = open("LEDconfig/LEDT16config.txt", "r")
+    b = bytes(f.read(), 'utf-8')
+    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    ser.write(b)
+    ser.write(b'X')
 
 
 
