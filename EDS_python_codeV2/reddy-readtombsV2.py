@@ -5,13 +5,13 @@ import time
 import keyboard #problem to run this in module in Mac
 import calendar
 #Tombs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] #ALL TOMBS Active
-Tombs = [1] #Some Tombs
+Tombs = [1,2] #Some Tombs
 Tombscall = [b'A',b'B',b'C',b'D',b'E',b'F',b'G',b'H',b'I',b'J',b'K',b'L',b'M',b'N',b'O',b'P']
 T=0
 nodata = 0
 COfilestime=15 #in Seconds
 #ser = serial.Serial('/dev/cu.usbserial-A10KBZNY', 57600,timeout=1.009)  # open serial port. Minimum timeout = (PIRdelay*SamplingNumber) + 0.009 .  The PIRdelay and SamplingNumber values can be find in the TombV2.ino code.
-ser = serial.Serial('COM10', 57600,timeout=1)  # open serial port. Minimum timeout = (PIRdelay*SamplingNumber) + 0.009 .  The PIRdelay and SamplingNumber values can be find in the TombV2.ino code.
+ser = serial.Serial('COM3', 57600,timeout=1)  # open serial port. Minimum timeout = (PIRdelay*SamplingNumber) + 0.009 .  The PIRdelay and SamplingNumber values can be find in the TombV2.ino code.
 
 
 #Folder Name 
@@ -19,22 +19,22 @@ timenow = datetime.datetime.now()
 foldername=timenow.strftime("%Y%m%d_%H%M")
 
 #LEDTxconfig.txt addresses
-LEDT1configAddress=os.getcwd()+"/LEDconfig"+"/LEDT1config.txt
-LEDT2configAddress=os.getcwd()+"/LEDconfig"+"/LEDT2config.txt
-LEDT3configAddress=os.getcwd()+"/LEDconfig"+"/LEDT3config.txt
-LEDT4configAddress=os.getcwd()+"/LEDconfig"+"/LEDT4config.txt
-LEDT5configAddress=os.getcwd()+"/LEDconfig"+"/LEDT5config.txt
-LEDT6configAddress=os.getcwd()+"/LEDconfig"+"/LEDT6config.txt
-LEDT7configAddress=os.getcwd()+"/LEDconfig"+"/LEDT7config.txt
-LEDT8configAddress=os.getcwd()+"/LEDconfig"+"/LEDT8config.txt
-LEDT9configAddress=os.getcwd()+"/LEDconfig"+"/LEDT9config.txt
-LEDT10configAddress=os.getcwd()+"/LEDconfig"+"/LEDT10config.txt
-LEDT11configAddress=os.getcwd()+"/LEDconfig"+"/LEDT11config.txt
-LEDT12configAddress=os.getcwd()+"/LEDconfig"+"/LEDT12config.txt
-LEDT13configAddress=os.getcwd()+"/LEDconfig"+"/LEDT13config.txt
-LEDT14configAddress=os.getcwd()+"/LEDconfig"+"/LEDT14config.txt
-LEDT15configAddress=os.getcwd()+"/LEDconfig"+"/LEDT15config.txt
-LEDT16configAddress=os.getcwd()+"/LEDconfig"+"/LEDT16config.txt
+LEDT1configAddress=os.getcwd()+"/LEDconfig"+"/LEDT1config.txt"
+LEDT2configAddress=os.getcwd()+"/LEDconfig"+"/LEDT2config.txt"
+LEDT3configAddress=os.getcwd()+"/LEDconfig"+"/LEDT3config.txt"
+LEDT4configAddress=os.getcwd()+"/LEDconfig"+"/LEDT4config.txt"
+LEDT5configAddress=os.getcwd()+"/LEDconfig"+"/LEDT5config.txt"
+LEDT6configAddress=os.getcwd()+"/LEDconfig"+"/LEDT6config.txt"
+LEDT7configAddress=os.getcwd()+"/LEDconfig"+"/LEDT7config.txt"
+LEDT8configAddress=os.getcwd()+"/LEDconfig"+"/LEDT8config.txt"
+LEDT9configAddress=os.getcwd()+"/LEDconfig"+"/LEDT9config.txt"
+LEDT10configAddress=os.getcwd()+"/LEDconfig"+"/LEDT10config.txt"
+LEDT11configAddress=os.getcwd()+"/LEDconfig"+"/LEDT11config.txt"
+LEDT12configAddress=os.getcwd()+"/LEDconfig"+"/LEDT12config.txt"
+LEDT13configAddress=os.getcwd()+"/LEDconfig"+"/LEDT13config.txt"
+LEDT14configAddress=os.getcwd()+"/LEDconfig"+"/LEDT14config.txt"
+LEDT15configAddress=os.getcwd()+"/LEDconfig"+"/LEDT15config.txt"
+LEDT16configAddress=os.getcwd()+"/LEDconfig"+"/LEDT16config.txt"
 
 #folder creation
 
@@ -595,7 +595,7 @@ try:
   m = Tombscall[Tombs[T] - 1] 
   ser.write(m)     # Asking tomb for data
   sended=str(m,'utf-8')
-  print(sended)
+  #print(sended)
   data=ser.readline()
   
   #saving timestamp to the correct spreadsheet
