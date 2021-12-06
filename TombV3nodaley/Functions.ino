@@ -1,6 +1,6 @@
 
 void clearparameters(){
-  for(int x=0; x<65; x++){
+  for(int x=0; x<BSize; x++){
     parameters[x]=0;
   }
 }

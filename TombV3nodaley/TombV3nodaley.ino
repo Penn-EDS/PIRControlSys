@@ -1,21 +1,12 @@
-//This sketch provides an example of a simple system of 6 digital inputs for PIRs and 1 channel for envirnomental light.
-//This data is sent every 10seconds across a serial (USB) connection, as a comma-separated string of values.
-// The sketch is written longhand, in an attempt to improve clarity.  Use of arrays for values and counters to improve brevity and flexibility:
-// http://arduino.cc/en/Reference/For  for details on arrays  and  
-// http://arduino.cc/en/Reference/While  for other timing options
+// <MH> Add the header
+//This sketch provides an example of a simple system of 6 digital inputs for PIRs and 6 channel for environmental light LDR.
 #include <SPI.h>
 #include <SparkFunDS3234RTC.h>
-
-// Comment out the line below if you want date printed before month.
-// E.g. October 31, 2016: 10/31/16 vs. 31/10/16
-#define PRINT_USA_DATE
 
 //////////////////////////////////
 // Configurable Pin Definitions //
 //////////////////////////////////
 #define DS13074_CS_PIN 8 // DeadOn RTC Chip-select pin
-//#define INTERRUPT_PIN 2 // DeadOn RTC SQW/interrupt pin (optional)
-
 
 #define WHITELED 10  // LED White
 #define REDLED 9  // LED REd
@@ -32,11 +23,15 @@
 #define PIR6 7
 #define LDR6 A5
 
+// **** This line used only in PGM mode, index to assign the letter to the tomb in 
+// the array below called deviceCALLID[] 
 // Tomb number. Make sure to enter the correct tomb number before programing the MCU
 int TOMB = 2;
 
+//Don't change any of these variables below
+
 // Military Hour Used 00:00 - 23:59
-// SET up variables:
+// init variables for the RTC
 int Day = 0;
 int Month = 0;
 int Year = 0;
@@ -46,49 +41,48 @@ int Sec = 0;
 int RtcDay = 0;
 int DayS = 0;
 
+//*** Variables to compare time from files and RTC
+// Limit is Feb 07 2106 --> 32bit u_long value
 unsigned long LEDUnix = 0;
 unsigned long RTCUnix = 0;
- 
+
+// Red LED intensity values 
+// White LED intensity values  
 int Rintensity=0; // REDLED PWM duty cycle change 100% = 255 and 0 = OFF
 int Wintensity=0;
 
-int NextLEDConfiflag = 0; // if 1 the LED time varianbles are going to be updated with the next 8 variables
-int NextLEDConfi = 0; // pointer for the LEDparameters array
-int IFLEDParameterReceived = 0; // 1 if after LED parameters are received for the first time.
-int laspara=0; // to know if last parameter was made 
+short NextLEDConfiflag = 0; // flag if 1 the LED time variables are going to be updated with the next 8 variables
+short IFLEDParameterReceived = 0; //flag  1 if after LED parameters are received for the first time.
+short laspara=0; // flag to know if last parameter was made 
 
-
-
-//Don't change any of these variables below:
+// Python tomb name calling for PIR and LDR values in that particular instant
 const char deviceCALLID[16] ={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'};
 
+// Python tomb name to respond back to the python query for a given tomb in a particular instant 
 const char deviceSendID[16] ={'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p'};
 
 String dev = String(deviceSendID[TOMB-1]);
 
-//(sec,min,hour,weekday,day,month,year)
-int RTC[7] ={0,0,0,1,1,1,2000};
-
 char recvchars[32];
 boolean newdata=false;
 int p=0;
-static int parameters[65];
-int ASize=456;                   //Size of LED configuration array
-static int LEDparameters[456];  //LED configuration array
-int LEDpointer = 0;
-int LEDvalues =0; //just a flag
-int PIRCounter1 = 0;  //acitivty counter for PIR1
-int PIRCounter2 = 0;  //acitivty counter for PIR2
-int PIRCounter3 = 0;  //acitivty counter for PIR3
-int PIRCounter4 = 0;  //acitivty counter for PIR4
-int PIRCounter5 = 0;  //acitivty counter for PIR5
-int PIRCounter6 = 0;  //acitivty counter for PIR6
-int LoopCounter = 0; //loopcounter for activity
+
+#define BSize 7  //RTC update array size parameters
+#define ASize 456 //Size in bytes of the LED configuration array
+
+static int parameters[BSize];  // RTC parameter array
+static int LEDparameters[ASize];  //LED configuration array
+
+int LEDpointer = 0; // Index to point to LED config text items for LEDparameters[ASize]
+int LEDvalues = 0; // Flag to indicate the receipt of the values
 
 void setup() {
-  
-  Serial.begin(57600);
+  Serial.begin(57600); // Verify speed with the worst case: 16 tombs and comm with the last one
+
+  // verify the RTC is alive
   rtc.begin(DS13074_CS_PIN);
+
+  //Define pin status
   pinMode(WHITELED,OUTPUT); //PIN 10
   pinMode(REDLED,OUTPUT); //PIN 11
    
@@ -122,16 +116,17 @@ void setup() {
   // provide data labels for serial monitor on the computer, separated by commas. commented out as this is better included in Processing sketch
   //Serial.println("Time,ID,PIR1,PIR2,PIR3,PIR4,PIR5,PIR6,LDR");
 
- 
 }
 
 // This next section is the one that runs in a loop constantly, taking readings every tenth of a second 
 
-
 void loop() {
-if (IFLEDParameterReceived == 1){
-LEDcontrol();
-}
+  
+  // <MH> This where we left of the Code Review 
+  // Check if the Arduino tomb received parameters
+  if (IFLEDParameterReceived == 1){
+    LEDcontrol();
+  }
 if(Serial.available()){
   char value=Serial.read();
   if(value == deviceCALLID[TOMB-1]){
@@ -346,6 +341,7 @@ if(Serial.available()){
   }
  }     
 }
+
 
 void LEDcontrol(){
   // Call rtc.update() to update all rtc.seconds(), rtc.minutes(),
