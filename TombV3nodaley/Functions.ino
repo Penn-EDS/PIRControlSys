@@ -1,4 +1,6 @@
-
+// 
+// Clear the parameters[] array 
+//
 void clearparameters(){
   for(int x=0; x<BSize; x++){
     parameters[x]=0;
