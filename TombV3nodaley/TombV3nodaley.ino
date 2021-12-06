@@ -1,4 +1,4 @@
-// <MH> Add the header
+// Add the header
 //This sketch provides an example of a simple system of 6 digital inputs for PIRs and 6 channel for environmental light LDR.
 #include <SPI.h>
 #include <SparkFunDS3234RTC.h>
@@ -10,6 +10,7 @@
 
 #define WHITELED 10  // LED White
 #define REDLED 9  // LED REd
+#define TOMBDLY 500 //500ms multiplier for tomb time delta response debugging
 #define PIR1 2
 #define LDR1 A0
 #define PIR2 3
@@ -53,7 +54,6 @@ int Wintensity=0;
 
 short NextLEDConfiflag = 0; // flag if 1 the LED time variables are going to be updated with the next 8 variables
 short IFLEDParameterReceived = 0; //flag  1 if after LED parameters are received for the first time.
-short laspara=0; // flag to know if last parameter was made 
 
 // Python tomb name calling for PIR and LDR values in that particular instant
 const char deviceCALLID[16] ={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'};
@@ -121,73 +121,73 @@ void setup() {
 // This next section is the one that runs in a loop constantly, taking readings every tenth of a second 
 
 void loop() {
-  
-  // <MH> This where we left of the Code Review 
-  // Check if the Arduino tomb received parameters
-  if (IFLEDParameterReceived == 1){
-    LEDcontrol();
-  }
-if(Serial.available()){
-  char value=Serial.read();
-  if(value == deviceCALLID[TOMB-1]){
-    //send HEADER indicating data follows
-      Serial.print(dev);
-      Serial.print(",");
-      //Serial.print('\n');
-      //printTime();
-    // separate with a comma
-      //Serial.print(",");
-    // send total activity for PIR counters, separated by commas
-      Serial.print(digitalRead(PIR1));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(digitalRead(PIR2));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(digitalRead(PIR3));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(digitalRead(PIR4));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(digitalRead(PIR5));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(digitalRead(PIR6));
-      Serial.print(",");
-      //Serial.print('\n');
-   // read Light-dependant resistor (LDR) connected to analog pin 2 and send resulting number
-      Serial.print(analogRead(LDR1));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(analogRead(LDR2));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(analogRead(LDR3));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(analogRead(LDR4));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(analogRead(LDR5));
-      Serial.print(",");
-      //Serial.print('\n');
-      Serial.print(analogRead(LDR6));
-      Serial.print('\n'); // new line (linefeed) character 
+  if(Serial.available()){      //If there is something in the serial port
+      char value=Serial.read();
+      if(value == deviceCALLID[TOMB-1]){
+          //send HEADER indicating data follows
+        Serial.print(dev);
+        Serial.print(",");
+          //Serial.print('\n');
+          //printTime();
+          // separate with a comma
+          //Serial.print(",");
+          // send total activity for PIR counters, separated by commas
+        Serial.print(digitalRead(PIR1));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(digitalRead(PIR2));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(digitalRead(PIR3));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(digitalRead(PIR4));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(digitalRead(PIR5));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(digitalRead(PIR6));
+        Serial.print(",");
+        //Serial.print('\n');
+     // read Light-dependant resistor (LDR) connected to analog pin 2 and send resulting number
+        Serial.print(analogRead(LDR1));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(analogRead(LDR2));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(analogRead(LDR3));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(analogRead(LDR4));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(analogRead(LDR5));
+        Serial.print(",");
+        //Serial.print('\n');
+        Serial.print(analogRead(LDR6));
+        Serial.print('\n'); // new line (linefeed) character 
   }
   
-  //just for throubleshooting. this if can be eliminated later
+  //just for throubleshooting.
   if(value =='W'){
-      delay(500*TOMB);
+      delay(TOMBDLY*TOMB); //500ms delay multiplier
       Serial.print(dev);
       printTime();
-
       rtc.update();
-     RtcDay = (unsigned long)rtc.date();
-     RtcDay += (rtc.year()+2000-1970)*365.2422;    
+     RtcDay = (unsigned long)rtc.date(); // This is the value of the current day of the current month
+     RtcDay += (rtc.year()+2000-1970)*365.2422; //rtc.year is only the last 2 digits. 
+                                                //Calculate the days elapsed from 1970 until this year
+                                                //Multiply with 365.2422 to get the number of days
+                                                //elapsed since 1970        
+    // Check for leap year     
     if((rtc.year() % 4)==0){
-     RtcDay += 1;
+     RtcDay += 1;   // add an extra day
     }
+
+    // Check for the month and add the prior days of the previous month.
+    // and adjust the day value
     if(rtc.month()==2){
      RtcDay += 31;
     }
@@ -221,9 +221,10 @@ if(Serial.available()){
     if(rtc.month()==12){
      RtcDay += 334;
     }  
+    // Calculate the number of seconds elapsed since 1970 in UNIX format
+    // check unixtimestamp.com
     RTCUnix = (unsigned long)RtcDay*86400 + (unsigned long)rtc.hour()*3600 + (unsigned long)rtc.minute()*60 + (unsigned long)rtc.second();
 
-      
       Serial.print("rtcunix:");
       Serial.println(RTCUnix);
       Serial.print("ledunix:");
@@ -245,11 +246,13 @@ if(Serial.available()){
       Serial.print("wintensity:");
       Serial.println(Wintensity);
       Serial.print("rintensity:");
-      Serial.println(Rintensity);
-      Serial.print("lastparameter?:");
-      Serial.println(laspara);
-      
+      Serial.println(Rintensity);     
   }
+
+  // T command will update
+  // the RTC for all the tombs that are connected
+  // Using the time from the PC that is running the 
+  // python code
   
   if(value == 'T'){
     //delay(100);
@@ -257,30 +260,43 @@ if(Serial.available()){
     //delay(100);
     //Serial.println(" ");
     //clearparameters();
+    
+    // Read the serial port and fill the parameters array
     recvdata();
     
-    //(sec,min,hour,weekday,day,month,year)
-  rtc.setTime(parameters[0], parameters[1], parameters[2], parameters[3]+1, parameters[4], parameters[5], parameters[6]); 
-//  delay(200*TOMB);
+    // Below is the format to send the data from the python code. 
+    //<sec,min,hour,weekday,day,month,year>
+    // parameters organized in the order above for each element of the array
+    // For weekday, add 1 to compensate for Sunday Monday start of the day 
+    // Discrepancy
+    rtc.setTime(parameters[0], parameters[1], parameters[2], parameters[3]+1, parameters[4], parameters[5], parameters[6]); 
+//     delay(200*TOMB);
 //      Serial.print("tomb "); 
 //      Serial.print(TOMB);
 //      Serial.print(" rtc time: ");
 //      Serial.print('\n');
 //      printTime();
 //      Serial.print('\n');
+      // Clean the array after use. 
       clearparameters();
   }
-
+  
+  //
+  // Z command will Read the parameters from LEDs
+  // Then read any tomb letter to send the txt file config
+  // for that tomb
+  // or X if done with the data transfer
   if(value == 'Z'){
    while(LEDvalues==0){
-    if(Serial.available()){
+     if(Serial.available()){
      char value=Serial.read();
      if (value =='X'){
       LEDvalues=1;
      }
+     // we are talking to a specific tomb
      if(value == deviceCALLID[TOMB-1]){
        clearLEDparameters();
-       LEDrecvdata();
+       LEDrecvdata(); // fill the LED parameters from txt file
        LEDpointer = 0;
        Day = LEDparameters[LEDpointer];
        Month = LEDparameters[++LEDpointer];
@@ -290,8 +306,10 @@ if(Serial.available()){
        Sec = LEDparameters[++LEDpointer];
        Wintensity = LEDparameters[++LEDpointer];
        Rintensity = LEDparameters[++LEDpointer];
+       // Conversion to Unix time from the txt file
+       // same as W RTC conversion section
        DayS=Day;
-       DayS += (Year-1970)*365.2422;     
+       DayS += (Year-1970)*365.2422; // Year in txt file is xxxx    
       if((Year % 4)==0){
         DayS += 1;
       }
@@ -330,19 +348,29 @@ if(Serial.available()){
       }
       
        LEDUnix = (unsigned long)DayS*86400 + (unsigned long)Hour*3600 +(unsigned long)Minute*60 + (unsigned long)Sec ;
-       IFLEDParameterReceived = 1;
-       laspara=0;
-       
+       IFLEDParameterReceived = 1;      
        LEDvalues=1; 
       }
      }
     }
     LEDvalues=0;
   }
- }     
+ } 
+ 
+  // Check if the Arduino tomb received parameters
+  
+  if (IFLEDParameterReceived == 1){
+    // LED parameters are now set now 
+    // Execute them 
+    LEDcontrol();
+  }    
 }
 
-
+//
+// Function to execute the parameters
+// When LEDunix >= RTCUnix
+// Use 32 as an exit value from the array 
+// 
 void LEDcontrol(){
   // Call rtc.update() to update all rtc.seconds(), rtc.minutes(),
   // etc. return functions.
@@ -388,13 +416,17 @@ void LEDcontrol(){
   }  
   RTCUnix = (unsigned long)RtcDay*86400 + (unsigned long)rtc.hour()*3600 + (unsigned long)rtc.minute()*60 + (unsigned long)rtc.second();
   
-
+  //
+  //Check the RTC time and compare it with the 
+  // python code time to execute the LED intensity  
+  // 
   if (RTCUnix>=LEDUnix){  
     analogWrite(REDLED,Rintensity);
     analogWrite(WHITELED,Wintensity);
     NextLEDConfiflag=1;
   }
 
+  // Read the next line in the array 
   if(NextLEDConfiflag==1){
       if(LEDparameters[++LEDpointer]==32){
         //end of array
@@ -402,7 +434,6 @@ void LEDcontrol(){
         analogWrite(REDLED,0);
         analogWrite(WHITELED,0);
         IFLEDParameterReceived = 0;
-        laspara=1;
         goto Last;
       }
        Day = LEDparameters[LEDpointer];
@@ -454,12 +485,13 @@ void LEDcontrol(){
       
        LEDUnix = (unsigned long)DayS*86400 + (unsigned long)Hour*3600 + (unsigned long)Minute*60 + (unsigned long)Sec ;
        NextLEDConfiflag = 0;
-  }
-Last:
-NextLEDConfiflag = 0;
-
+  } 
+Last: NextLEDConfiflag = 0;
 }
 
+//
+// Function to organize the Serial print for the RTC info 
+//
 void printTime()
 {
   rtc.update();
