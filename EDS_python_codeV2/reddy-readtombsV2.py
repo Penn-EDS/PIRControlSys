@@ -4,12 +4,13 @@ import os
 import time
 import keyboard #problem to run this in module in Mac
 import calendar
-#Tombs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] #ALL TOMBS Active
-Tombs = [1,2] #Some Tombs
+Tombs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] #ALL TOMBS Active
+#Tombs = [1,2] #Some Tombs
 Tombscall = [b'A',b'B',b'C',b'D',b'E',b'F',b'G',b'H',b'I',b'J',b'K',b'L',b'M',b'N',b'O',b'P']
 T=0
 nodata = 0
 COfilestime=15 #close and open file time in t Seconds, update as needed to regulate how fast to open and close the files.
+LD = 0.1 #delay in seconds before sending the LED Configuration to the serial. minimum value is 90ms.
 #ser = serial.Serial('/dev/cu.usbserial-A10KBZNY', 57600,timeout=1.009)  # open serial port. Minimum timeout = (PIRdelay*SamplingNumber) + 0.009 .  The PIRdelay and SamplingNumber values can be find in the TombV2.ino code.
 ser = serial.Serial('COM3', 57600,timeout=1)  # open serial port. Minimum timeout = (PIRdelay*SamplingNumber) + 0.009 .  The PIRdelay and SamplingNumber values can be find in the TombV2.ino code.
 
@@ -242,7 +243,7 @@ try:
              f = open("LEDconfig/LEDT1config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)  
          if Tombscall[x-1] == b'B':
              #send all information inside LEDT2config.txt
@@ -250,7 +251,7 @@ try:
              f = open("LEDconfig/LEDT2config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'C':
              #send all information inside LEDT3config.txt
@@ -258,7 +259,7 @@ try:
              f = open("LEDconfig/LEDT3config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'D':
              #send all information inside LEDT4config.txt
@@ -266,7 +267,7 @@ try:
              f = open("LEDconfig/LEDT4config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'E':
              #send all information inside LEDT5config.txt
@@ -274,7 +275,7 @@ try:
              f = open("LEDconfig/LEDT5config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'F':
              #send all information inside LEDT6config.txt
@@ -282,7 +283,7 @@ try:
              f = open("LEDconfig/LEDT6config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'G':
              #send all information inside LEDT7config.txt
@@ -290,7 +291,7 @@ try:
              f = open("LEDconfig/LEDT7config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'H':
              #send all information inside LEDT8config.txt
@@ -298,7 +299,7 @@ try:
              f = open("LEDconfig/LEDT8config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'I':
              #send all information inside LEDT9config.txt
@@ -306,7 +307,7 @@ try:
              f = open("LEDconfig/LEDT9config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'J':
              #send all information inside LEDT10config.txt
@@ -314,7 +315,7 @@ try:
              f = open("LEDconfig/LEDT10config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'K':
              #send all information inside LEDT11config.txt
@@ -322,7 +323,7 @@ try:
              f = open("LEDconfig/LEDT11config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'L':
              #send all information inside LEDT12config.txt
@@ -330,7 +331,7 @@ try:
              f = open("LEDconfig/LEDT12config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'M':
              #send all information inside LEDT13config.txt
@@ -338,7 +339,7 @@ try:
              f = open("LEDconfig/LEDT13config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'N':
              #send all information inside LEDT14config.txt
@@ -346,7 +347,7 @@ try:
              f = open("LEDconfig/LEDT14config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'O':
              #send all information inside LEDT15config.txt
@@ -354,7 +355,7 @@ try:
              f = open("LEDconfig/LEDT15config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
          if Tombscall[x-1] == b'P':
              #send all information inside LEDT16config.txt
@@ -362,7 +363,7 @@ try:
              f = open("LEDconfig/LEDT16config.txt", "r")
              b = bytes(f.read(), 'utf-8')
              f.close() #close the file id
-             time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+             time.sleep(LD)  #this delay is needed. minimum values is 90ms
              ser.write(b)
     ser.write(b'X')
            
@@ -374,7 +375,7 @@ try:
     f = open("LEDconfig/LEDT1config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
     
@@ -386,7 +387,7 @@ try:
     f = open("LEDconfig/LEDT2config.txt", "r")
     bb = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
     
@@ -398,7 +399,7 @@ try:
     f = open("LEDconfig/LEDT3config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
     
@@ -410,7 +411,7 @@ try:
     f = open("LEDconfig/LEDT4config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
     
@@ -422,7 +423,7 @@ try:
     f = open("LEDconfig/LEDT5config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
     
@@ -434,7 +435,7 @@ try:
     f = open("LEDconfig/LEDT6config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -446,7 +447,7 @@ try:
     f = open("LEDconfig/LEDT7config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -458,7 +459,7 @@ try:
     f = open("LEDconfig/LEDT8config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -470,7 +471,7 @@ try:
     f = open("LEDconfig/LEDT9config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
     
@@ -482,7 +483,7 @@ try:
     f = open("LEDconfig/LEDT10config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -494,7 +495,7 @@ try:
     f = open("LEDconfig/LEDT11config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -506,7 +507,7 @@ try:
     f = open("LEDconfig/LEDT12config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -518,7 +519,7 @@ try:
     f = open("LEDconfig/LEDT13config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -530,7 +531,7 @@ try:
     f = open("LEDconfig/LEDT14config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -542,7 +543,7 @@ try:
     f = open("LEDconfig/LEDT15config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -554,7 +555,7 @@ try:
     f = open("LEDconfig/LEDT16config.txt", "r")
     b = bytes(f.read(), 'utf-8')
     f.close() #close the file id
-    time.sleep(0.09)  #this delay is needed. minimum values is 90ms
+    time.sleep(LD)  #this delay is needed. minimum values is 90ms
     ser.write(b)
     ser.write(b'X')
 
@@ -607,7 +608,7 @@ try:
              FileT11 = open(FilenameT11,"a")
          if Tombscall[x-1] == b'L':
              FileT12.close()
-             FileT22 = open(FilenameT12,"a")
+             FileT12 = open(FilenameT12,"a")
          if Tombscall[x-1] == b'M':
              FileT13.close()
              FileT13 = open(FilenameT13,"a")
