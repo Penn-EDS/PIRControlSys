@@ -11,8 +11,8 @@ T=0
 nodata = 0
 COfilestime=5000 #close and open file time in t Seconds, update as needed to regulate how fast to open and close the files.
 LD = 0.1 #delay in seconds before sending the LED Configuration to the serial. minimum value is 90ms.
-#ser = serial.Serial('/dev/cu.usbserial-A10KBZNY', 57600,timeout=1.009)  # open serial port. Minimum timeout = (PIRdelay*SamplingNumber) + 0.009 .  The PIRdelay and SamplingNumber values can be find in the TombV2.ino code.
-ser = serial.Serial('COM20', 57600,timeout=1)  # open serial port. Minimum timeout = (PIRdelay*SamplingNumber) + 0.009 .  The PIRdelay and SamplingNumber values can be find in the TombV2.ino code.
+#ser = serial.Serial('/dev/cu.usbserial-A10KBZNY', 57600,timeout=0.02)  # open serial port. Minimum timeout = 
+ser = serial.Serial('COM20', 57600,timeout=0.02)  # open serial port. Minimum timeout = 
 
 
 #Folder Name 
