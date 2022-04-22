@@ -1,21 +1,31 @@
+# Purpose: Code that processes commands from the user interface and
+# transfers them to Arduino Tombs
+#
+# Author: Alexander Santos
+# Date : April 22, 2022
+#
+# 
+# Rev 1.0 (PQ) This was the latest version in production (received email from Utham) Added revision header
+#
+
 import serial
 import datetime
 import os
 import time
 import keyboard #problem to run this in module in Mac
 import calendar
-#Tombs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] #ALL TOMBS Active
-Tombs = [1] #Some Tombs
+Tombs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] #ALL TOMBS Active
+#Tombs = [1] #Some Tombs
 Tombscall = [b'A',b'B',b'C',b'D',b'E',b'F',b'G',b'H',b'I',b'J',b'K',b'L',b'M',b'N',b'O',b'P']
 T=0
 nodata = 0
-COfilestime=5000 #close and open file time in t Seconds, update as needed to regulate how fast to open and close the files.
+COfilestime=120 #close and open file time in t Seconds, update as needed to regulate how fast to open and close the files.
 LD = 0.1 #delay in seconds before sending the LED Configuration to the serial. minimum value is 90ms.
-#ser = serial.Serial('/dev/cu.usbserial-A10KBZNY', 57600,timeout=0.02)  # open serial port. Minimum timeout = 
-ser = serial.Serial('COM20', 57600,timeout=0.02)  # open serial port. Minimum timeout = 
+#ser = serial.Serial('/dev/cu.usbserial-A10KBZNY', 57600,timeout=0.02)  # open serial port. Minimum timeout =
+ser = serial.Serial('COM3', 57600,timeout=0.5)  # open serial port. Minimum timeout =
 
-
-#Folder Name 
+ser.write(b'X') #take out the tomb from LEDconfig receiveing loop if code break in that particular loop
+#Folder Name
 timenow = datetime.datetime.now()
 foldername=timenow.strftime("%Y%m%d_%H%M")
 
@@ -114,14 +124,17 @@ for x in Tombs:
      FilenameT16=foldername+"/Tomb16.txt"
      FileT16 = open(FilenameT16,"a")
      FileT16.write("Time Stamp,Data Header ID,PIR1,PIR2,PIR3,PIR4,PIR5,PIR6,LDR1,LDR2,LDR3,LDR4,LDR5,LDR6 \n")
- 
+
 
 todayday=datetime.datetime.today()
 day=calendar.weekday(todayday.year, todayday.month, todayday.day)
+
+print("Data acquisition started!")
+print("Ready for Commands:")
 try:
  starttime=time.time()
  while True:
-       
+
     #New Date folder if 12AM
       todayday=datetime.datetime.today()
       if ((calendar.weekday(todayday.year, todayday.month, todayday.day)>day) or ((day==6) and (calendar.weekday(todayday.year, todayday.month, todayday.day)==0))):
@@ -232,7 +245,7 @@ try:
                  FilenameT16=foldername+"/Tomb16.txt"
                  FileT16 = open(FilenameT16,"a")
                  FileT16.write("Time Stamp,Data Header ID,PIR1,PIR2,PIR3,PIR4,PIR5,PIR6,LDR1,LDR2,LDR3,LDR4,LDR5,LDR6 \n")
-          
+
           day=calendar.weekday(todayday.year, todayday.month, todayday.day)
       #To send the LED Configuration to each tomb
       if (keyboard.is_pressed("R") and keyboard.is_pressed("|")):
@@ -247,7 +260,7 @@ try:
                  b = bytes(f.read(), 'utf-8')
                  f.close() #close the file id
                  time.sleep(LD)  #this delay is needed. minimum values is 90ms
-                 ser.write(b)  
+                 ser.write(b)
              if Tombscall[x-1] == b'B':
                  #send all information inside LEDT2config.txt
                  ser.write(Tombscall[x-1])
@@ -369,7 +382,7 @@ try:
                  time.sleep(LD)  #this delay is needed. minimum values is 90ms
                  ser.write(b)
         ser.write(b'X')
-        print("All LEDconfig.txt sended")       
+        print("All LEDconfig.txt sended")
       #To send the LED Configuration Only to Tomb 1
       if (keyboard.is_pressed("A") and keyboard.is_pressed("|")):
         while (keyboard.is_pressed("A") and keyboard.is_pressed("|")) == True:
@@ -383,8 +396,8 @@ try:
         time.sleep(LD)  #this delay is needed. minimum values is 90ms
         ser.write(b)
         ser.write(b'X')
-        print("LED1config.txt sended") 
-        
+        print("LED1config.txt sended")
+
       #To send the LED Configuration Only to Tomb 2
       if (keyboard.is_pressed("B") and keyboard.is_pressed("|")):
         while (keyboard.is_pressed("B") and keyboard.is_pressed("|")) == True:
@@ -399,7 +412,7 @@ try:
         ser.write(b)
         ser.write(b'X')
         print("LED2config.txt sended")
-        
+
       #To send the LED Configuration Only to Tomb 3
       if (keyboard.is_pressed("C") and keyboard.is_pressed("|")):
         while (keyboard.is_pressed("C") and keyboard.is_pressed("|")) == True:
@@ -414,7 +427,7 @@ try:
         ser.write(b)
         ser.write(b'X')
         print("LED3config.txt sended")
-        
+
       #To send the LED Configuration Only to Tomb 4
       if (keyboard.is_pressed("D") and keyboard.is_pressed("|")):
         while (keyboard.is_pressed("D") and keyboard.is_pressed("|")) == True:
@@ -429,7 +442,7 @@ try:
         ser.write(b)
         ser.write(b'X')
         print("LED4config.txt sended")
-        
+
       #To send the LED Configuration Only to Tomb 5
       if (keyboard.is_pressed("E") and keyboard.is_pressed("|")):
         while (keyboard.is_pressed("E") and keyboard.is_pressed("|")) == True:
@@ -444,7 +457,7 @@ try:
         ser.write(b)
         ser.write(b'X')
         print("LED5config.txt sended")
-        
+
      #To send the LED Configuration Only to Tomb 6
       if (keyboard.is_pressed("F") and keyboard.is_pressed("|")):
         while (keyboard.is_pressed("F") and keyboard.is_pressed("|")) == True:
@@ -504,7 +517,7 @@ try:
         ser.write(b)
         ser.write(b'X')
         print("LED9config.txt sended")
-        
+
       #To send the LED Configuration Only to Tomb 10
       if (keyboard.is_pressed("J") and keyboard.is_pressed("|")):
         while (keyboard.is_pressed("J") and keyboard.is_pressed("|")) == True:
@@ -609,7 +622,7 @@ try:
         ser.write(b)
         ser.write(b'X')
         print("LED16config.txt sended")
-        
+
 
       #To setup the RTC with the computer time
       if (keyboard.is_pressed("T") and keyboard.is_pressed("|")):
@@ -621,14 +634,14 @@ try:
           RTCtime=str.encode(RTCtime)
           ser.write(RTCtime)
           print("ALL RTC Updated")
-                
+
       #ask arduinos for RTC time
       if (keyboard.is_pressed("W") and keyboard.is_pressed("|")):
           while (keyboard.is_pressed("W") and keyboard.is_pressed("|")) == True:
             pass
           ser.write(b'W')
           print(ser.readline())
-      
+
       #saving and closing the files every COfilestime
       if (time.time()-starttime)>=COfilestime or (keyboard.is_pressed("Q") and keyboard.is_pressed("|")) :
       #closing and opening the just the files for the tombs that are being use
@@ -687,27 +700,27 @@ try:
              if Tombscall[x-1] == b'P':
                  FileT16.close()
                  FileT16 = open(FilenameT16,"a")
-         
+
          #print("Files Closed")
          starttime=time.time()
-            
+
       if T == len(Tombs):
        T=0
-      m = Tombscall[Tombs[T] - 1] 
+      m = Tombscall[Tombs[T] - 1]
       ser.write(m)     # Asking tomb for data
       sended=str(m,'utf-8')
       #print(sended)
       data=ser.readline()
-      
+
       #saving timestamp to the correct spreadsheet
       timestampnow = datetime.datetime.now()
       timestamp=timestampnow.strftime("%Y-%m-%dT%H:%M:%S")
       data=str(data,'utf-8')
-      
+
       if data != '':
         data=timestamp+"," + data
         #print(data)
-      
+
       if m == b'A':
          FileT1.write(data)
       if m == b'B':
@@ -740,7 +753,7 @@ try:
          FileT15.write(data)
       if m == b'P':
          FileT16.write(data)
-           
+
       T += 1
 except KeyboardInterrupt:
   #close all files
